@@ -22,5 +22,8 @@ public class AdServiceImpl implements AdService {
     }
 
 
-
+    @Override
+    public List<Ad> findByAdId(String adId) {
+        return adRepository.findByAdId(adId);
+    }
 }

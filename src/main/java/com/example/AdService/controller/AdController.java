@@ -1,9 +1,11 @@
 package com.example.AdService.controller;
 
 import com.example.AdService.document.Ad;
+import com.example.AdService.document.TrendingCache;
 import com.example.AdService.document.UserCache;
 import com.example.AdService.dto.RecieveTagDTO;
 import com.example.AdService.services.AdService;
+import com.example.AdService.services.TrendingCacheService;
 import com.example.AdService.services.UserCacheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
@@ -24,24 +26,30 @@ import java.util.Random;
 public class AdController {
 
     @Autowired
-    AdService adService;
+    private AdService adService;
 
     @Autowired
-    UserCacheService userCacheService;
+    private UserCacheService userCacheService;
+
+    @Autowired
+    private TrendingCacheService trendingCacheService;
+
 
     @GetMapping("/getAds/{userId}")
     @Cacheable(value = "update")
     public ResponseEntity<List<Ad>> getAds(@PathVariable(value = "userId") String userId )
     {
-        //TODO api call from analytical service
+        //TODO api call from analytical service and update tags which is null now
 
         if(userCacheService.getItem(userId)==null)
         {
 
+            List<Ad> finalAds = new ArrayList<>();
+
 
             List<String> tags = null;
+
             List<Ad> ads = new ArrayList<>();
-            List<Ad> finalAds = new ArrayList<>();
 
             for (int i = 0; i < tags.size(); i++) {
 
@@ -59,9 +67,27 @@ public class AdController {
         }
 
         else
-            {
-            UserCache userCache=userCacheService.getItem(userId);
-            return new ResponseEntity<>(userCache.getAds(),HttpStatus.FOUND);
+        {
+            List<Ad> finalAds = new ArrayList<>();
+
+            TrendingCache trendingCache = trendingCacheService.getItem("1");
+                UserCache userCache = userCacheService.getItem(userId);
+
+                List<Ad> userCacheAds = userCache.getAds();
+                for (int i = 0; i < 3; i++) {
+                    Random rand = new Random();
+                    Ad ad = userCacheAds.get(rand.nextInt(userCacheAds.size()));
+                    finalAds.add(ad);
+                }
+
+                List<Ad> trendingCacheAds = trendingCache.getAds();
+                for (int i = 0; i < 2; i++) {
+                    Random rand = new Random();
+                    Ad ad = trendingCacheAds.get(rand.nextInt(trendingCacheAds.size()));
+                    finalAds.add(ad);
+                }
+
+                return new ResponseEntity<>(finalAds,HttpStatus.FOUND);
         }
 
     }
@@ -70,7 +96,6 @@ public class AdController {
     @KafkaListener(topics = "listenTags",groupId = "group_id")
     public void consume(RecieveTagDTO recieveTagDTO){
 
-        //todo consumed recievetag DTO'
         List<String> tags=recieveTagDTO.getTags();
         String userId=recieveTagDTO.getUserId();
 
@@ -84,6 +109,18 @@ public class AdController {
 
         UserCache userCache=new UserCache(userId,ads);
         userCacheService.addItem(userCache);
+    }
+
+    @KafkaListener(topics = "listenTrending",groupId = "group_id")
+    public void consumeTrend(List<String> trendingAdIds){
+
+        List<Ad> ads = new ArrayList<>();
+        for(int i=0 ;i <trendingAdIds.size();i++){
+            ads.addAll(adService.findByAdId(trendingAdIds.get(i)));
+        }
+
+        TrendingCache trendingCache = new TrendingCache("1",ads);
+        trendingCacheService.addItem(trendingCache);
     }
 
 }

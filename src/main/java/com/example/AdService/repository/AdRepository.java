@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface AdRepository extends MongoRepository<Ad,String> {
 
     Optional<List<Ad>> findByTags(String tag);
+    List<Ad> findByAdId(String adId);
 }
