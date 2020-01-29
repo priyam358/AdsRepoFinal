@@ -2,6 +2,7 @@ package com.example.AdService.dto;
 
 import com.example.AdService.document.Category;
 import lombok.Data;
+import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 
 
@@ -9,11 +10,17 @@ import org.springframework.data.annotation.Id;
 public class AdDTO {
 
 
-    String adId;
-    Category category;
-    String addUrl;
-    String targetUrl;
-    String description;
-    String advertiserId;
-    String location;
+    private String adId;
+    @NonNull
+    private Category category;
+    @NonNull
+    private String addUrl;
+    @NonNull
+    private String targetUrl;
+    @NonNull
+    private String description;
+    @NonNull
+    private String advertiserId;
+    @NonNull
+    private String location;
 }
