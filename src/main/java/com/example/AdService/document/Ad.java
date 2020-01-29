@@ -10,7 +10,8 @@ public class Ad {
 
     @Id
     String adId;
-    Category category;
+    String categoryName;
+    String tag;                        //TODO categoryName and tagname should replace the category object
     String addUrl;
     String targetUrl;
     String description;

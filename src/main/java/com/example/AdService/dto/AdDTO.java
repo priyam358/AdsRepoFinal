@@ -10,7 +10,8 @@ public class AdDTO {
 
 
     String adId;
-    Category category;
+    String categoryName;
+    String tag;
     String addUrl;
     String targetUrl;
     String description;
