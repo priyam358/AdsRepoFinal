@@ -12,7 +12,7 @@ public class Ad {
     String adId;
     String categoryName;
     String tag;                        //TODO categoryName and tagname should replace the category object
-    String addUrl;
+    String imageUrl;
     String targetUrl;
     String description;
     String advertiserId;

@@ -1,15 +1,14 @@
 package com.example.AdService.dto;
 
+import lombok.Data;
 import lombok.NonNull;
 
 import java.util.List;
 
-public class CategoryDTO {
-
-    @NonNull
-    private String categoryId;
-    @NonNull
-    private String categoryName;
+@Data
+public class RecieveTagDTO {
     @NonNull
     private List<String> tags;
+    @NonNull
+    private String userId;
 }

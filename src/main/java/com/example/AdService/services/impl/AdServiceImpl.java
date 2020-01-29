@@ -20,4 +20,7 @@ public class AdServiceImpl implements AdService {
     public Optional<List<Ad>> findByTags(String tag) {
         return adRepository.findByTags(tag);
     }
+
+
+
 }
