@@ -10,6 +10,17 @@ import java.io.Serializable;
 
 @Data
 @Document(collection = "ads")
+public class Ad {
+
+    @Id
+    private String adId;
+    private String categoryName;
+    private String tag;
+    private String imageUrl;
+    private String targetUrl;
+    private String description;
+    private String advertiserId;
+    private String location;
 public class Ad implements Serializable {
 
     @Id
