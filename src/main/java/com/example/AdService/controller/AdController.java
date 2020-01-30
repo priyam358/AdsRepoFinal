@@ -8,6 +8,7 @@ import com.example.AdService.services.AdService;
 import com.example.AdService.services.TrendingCacheService;
 import com.example.AdService.services.UserCacheService;
 import org.apache.catalina.User;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -17,6 +18,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -44,13 +46,10 @@ public class AdController {
 
             List<Ad> finalAds = new ArrayList<>();
             List<String> tags = null;
+            Iterator<String> tag = tags.iterator();
             List<Ad> ads = new ArrayList<>();
 
-            for (int i = 0; i < tags.size(); i++) {
-
-                List<Ad> tagAds = adService.findByTags(tags.get(i)).get();
-                ads.addAll(tagAds);
-            }
+            List<Ad> tagAds = adService.findByTagsIn(tag);
 
             for (int i = 0; i < 5; i++) {
                 Random rand = new Random();
@@ -75,14 +74,11 @@ public class AdController {
     public void consume(RecieveTagDTO recieveTagDTO){
 
         List<String> tags=recieveTagDTO.getTags();
+        Iterator<String> tag = tags.iterator();
         String userId=recieveTagDTO.getUserId();
         List<Ad> ads=new ArrayList<>();
 
-        for(int i=0;i<tags.size();i++)
-        {
-            List<Ad> tagAds = adService.findByTags(tags.get(i)).get();
-            ads.addAll(tagAds);
-        }
+        ads.addAll(adService.findByTagsIn(tag));
 
         UserCache userCache=new UserCache(userId,ads);
         userCacheService.addItem(userCache);
