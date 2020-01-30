@@ -19,10 +19,14 @@ import java.util.List;
 
 @RequestMapping("/ads")
 @RestController
+@CrossOrigin(origins = "*",allowedHeaders = "*")
 public class AdController {
 
     @Autowired
     AdService adService;
+
+    @Autowired
+    AdRepository adRepository;
 
     @Autowired
     CategoryRepository categoryRepository;
@@ -64,6 +68,14 @@ public class AdController {
     public ResponseEntity<List<CategoryDTO>> getCategories(){
 
         return new ResponseEntity<>(adService.getCategories(),HttpStatus.OK);
+
+    }
+
+    @GetMapping("/findAds/{tag}")
+    public List<Ad> findByTag(@PathVariable(value = "tag") String tag){
+
+        return adRepository.findByTag(tag);
+
 
     }
 
