@@ -3,10 +3,14 @@ package com.example.AdService.document;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.io.Serializable;
 
 
 @Data
-public class Ad {
+@Document(collection = "ads")
+public class Ad implements Serializable {
 
     @Id
     String adId;

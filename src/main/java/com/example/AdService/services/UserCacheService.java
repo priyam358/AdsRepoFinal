@@ -7,10 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+@Service
 @Component
 public class UserCacheService {
 
@@ -30,6 +33,7 @@ public class UserCacheService {
     }
 
     @CacheEvict(value="userCache",key = "#userId")
+    //@Scheduled(fixedDelay = 30000)
     public void deleteItem(String userId){
 
         userCacheRepository.deleteItem(userId);

@@ -34,7 +34,6 @@ public class TrendingCacheRepository {
 
     /*update an item from database*/
     public void updateItem(TrendingCache trendingCache){
-
         addItem(trendingCache);
     }
 
