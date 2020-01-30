@@ -1,8 +1,12 @@
 package com.example.AdService.controller;
 
 import com.example.AdService.document.Ad;
+import com.example.AdService.document.Category;
 import com.example.AdService.dto.AdDTO;
+import com.example.AdService.dto.CategoryDTO;
 import com.example.AdService.dto.onclickapi.OnClickRequest;
+import com.example.AdService.repository.AdRepository;
+import com.example.AdService.repository.CategoryRepository;
 import com.example.AdService.services.AdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +23,10 @@ public class AdController {
 
     @Autowired
     AdService adService;
+
+    @Autowired
+    CategoryRepository categoryRepository;
+
 
     @GetMapping("/getAds/{userId}")
     public List<Ad> getAds(@PathVariable(value = "userId") String userId )
@@ -39,6 +47,23 @@ public class AdController {
     public ResponseEntity<String> postAds(@Valid @RequestBody AdDTO adDTO){
 
         return new ResponseEntity<>(adService.addAd(adDTO), HttpStatus.ACCEPTED);
+
+    }
+
+//
+//    @PostMapping("/category")
+//    public String addCategory(@RequestBody Category category){
+//
+//        categoryRepository.save(category);
+//        return "posted";
+//
+//    }
+
+
+    @GetMapping("/categories")
+    public ResponseEntity<List<CategoryDTO>> getCategories(){
+
+        return new ResponseEntity<>(adService.getCategories(),HttpStatus.OK);
 
     }
 

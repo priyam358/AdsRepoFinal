@@ -14,7 +14,7 @@ public class Ad {
     private String adId;
     private String categoryName;
     private String tag;
-    private String addUrl;
+    private String imageUrl;
     private String targetUrl;
     private String description;
     private String advertiserId;
