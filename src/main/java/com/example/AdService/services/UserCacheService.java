@@ -19,7 +19,7 @@ public class UserCacheService {
 
     @Cacheable(value="userCache", key="#userId")
     public UserCache getItem(String userId){
-        System.out.println("In getItem cache Component..");
+
         UserCache userCache = null;
         try{
             userCache = userCacheRepository.getItem(userId);
@@ -28,21 +28,23 @@ public class UserCacheService {
         }
         return userCache;
     }
+
     @CacheEvict(value="userCache",key = "#userId")
     public void deleteItem(String userId){
-        System.out.println("In deleteItem cache Component..");
+
         userCacheRepository.deleteItem(userId);
     }
 
     @CachePut(value="userCache",key = "#userId")
     public void addItem(UserCache userCache){
-        System.out.println("In addItem cache component..");
+
         userCacheRepository.addItem(userCache);
     }
 
     @CachePut(value="userCache",key = "#userId",condition = "#result != null")
     public void updateItem(UserCache userCache){
-        System.out.println("In UpdateItem cache Component..");
+
+        userCacheRepository.deleteItem(userCache.getUserId());
         userCacheRepository.updateItem(userCache);
     }
 

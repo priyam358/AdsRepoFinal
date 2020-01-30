@@ -7,6 +7,7 @@ import com.example.AdService.dto.RecieveTagDTO;
 import com.example.AdService.services.AdService;
 import com.example.AdService.services.TrendingCacheService;
 import com.example.AdService.services.UserCacheService;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -36,19 +37,13 @@ public class AdController {
 
 
     @GetMapping("/getAds/{userId}")
-    @Cacheable(value = "update")
-    public ResponseEntity<List<Ad>> getAds(@PathVariable(value = "userId") String userId )
+    @Cacheable(value = "userCache")
+    public ResponseEntity<UserCache> getAds(@PathVariable(value = "userId") String userId )
     {
         //TODO api call from analytical service and update tags which is null now
 
-        if(userCacheService.getItem(userId)==null)
-        {
-
             List<Ad> finalAds = new ArrayList<>();
-
-
             List<String> tags = null;
-
             List<Ad> ads = new ArrayList<>();
 
             for (int i = 0; i < tags.size(); i++) {
@@ -62,43 +57,25 @@ public class AdController {
                 Ad ad = ads.get(rand.nextInt(ads.size()));
                 finalAds.add(ad);
             }
-
-            return new ResponseEntity<List<Ad>>(finalAds, HttpStatus.FOUND);
-        }
-
-        else
-        {
-            List<Ad> finalAds = new ArrayList<>();
-
-            TrendingCache trendingCache = trendingCacheService.getItem("1");
-                UserCache userCache = userCacheService.getItem(userId);
-
-                List<Ad> userCacheAds = userCache.getAds();
-                for (int i = 0; i < 3; i++) {
-                    Random rand = new Random();
-                    Ad ad = userCacheAds.get(rand.nextInt(userCacheAds.size()));
-                    finalAds.add(ad);
-                }
-
-                List<Ad> trendingCacheAds = trendingCache.getAds();
-                for (int i = 0; i < 2; i++) {
-                    Random rand = new Random();
-                    Ad ad = trendingCacheAds.get(rand.nextInt(trendingCacheAds.size()));
-                    finalAds.add(ad);
-                }
-
-                return new ResponseEntity<>(finalAds,HttpStatus.FOUND);
-        }
+            UserCache userCache=new UserCache(userId,finalAds);
+            return new ResponseEntity<UserCache>(userCache, HttpStatus.FOUND);
 
     }
 
+    @GetMapping("getTrendingAds")
+    @Cacheable(value="trendingCache")
+    public ResponseEntity<TrendingCache> getAds()
+    {
+        return  new ResponseEntity<TrendingCache>(trendingCacheService.getItem("1"),HttpStatus.FOUND);
+    }
 
+
+    //move this to services
     @KafkaListener(topics = "listenTags",groupId = "group_id")
     public void consume(RecieveTagDTO recieveTagDTO){
 
         List<String> tags=recieveTagDTO.getTags();
         String userId=recieveTagDTO.getUserId();
-
         List<Ad> ads=new ArrayList<>();
 
         for(int i=0;i<tags.size();i++)
