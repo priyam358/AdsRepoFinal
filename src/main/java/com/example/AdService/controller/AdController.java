@@ -7,23 +7,37 @@ import com.example.AdService.dto.CategoryDTO;
 import com.example.AdService.dto.onclickapi.OnClickRequest;
 import com.example.AdService.repository.AdRepository;
 import com.example.AdService.repository.CategoryRepository;
+
+import com.example.AdService.document.UserCache;
 import com.example.AdService.services.AdService;
+import com.example.AdService.services.UserCacheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+ 
+
 import javax.validation.Valid;
 import java.util.List;
 
+
+@CrossOrigin(origins =  "*", allowedHeaders = "*")
 @RequestMapping("/ads")
 @RestController
 @CrossOrigin(origins = "*",allowedHeaders = "*")
 public class AdController {
 
     @Autowired
-    AdService adService;
+    private AdService adService;
+
+    @Autowired
+    private UserCacheService userCacheService;
+
+//    @Autowired
+//    private TrendingCacheService trendingCacheService;
+
 
     @Autowired
     AdRepository adRepository;
@@ -33,7 +47,7 @@ public class AdController {
 
 
     @GetMapping("/getAds/{userId}")
-    public List<Ad> getAds(@PathVariable(value = "userId") String userId )
+   public List<Ad> getAds(@PathVariable(value = "userId") String userId )
     {
         return null; // to skip compilation errors
 
@@ -54,14 +68,6 @@ public class AdController {
 
     }
 
-//
-//    @PostMapping("/category")
-//    public String addCategory(@RequestBody Category category){
-//
-//        categoryRepository.save(category);
-//        return "posted";
-//
-//    }
 
 
     @GetMapping("/categories")
@@ -78,5 +84,16 @@ public class AdController {
 
 
     }
+
+
+
+    public ResponseEntity<List<Ad>> getAds(@PathVariable(value = "userId") String userId )
+    {
+        UserCache userCache = adService.getAds(userId);
+        return new ResponseEntity<>(userCache.getAds(),HttpStatus.OK);
+
+    }
+
+
 
 }
