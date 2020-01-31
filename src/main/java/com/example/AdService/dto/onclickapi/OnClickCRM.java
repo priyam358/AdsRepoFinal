@@ -1,6 +1,5 @@
 package com.example.AdService.dto.onclickapi;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,12 +11,14 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OnClickRequest {
+public class OnClickCRM {
 
     @NotNull
     String adId;
     @NotNull
     String tag;
+    @NotNull
+    String email;
     @NotNull
     String advertiserId;
     @NotNull
@@ -28,4 +29,5 @@ public class OnClickRequest {
     String source;
     @NotNull
     String targetUrl;
+
 }

@@ -1,5 +1,6 @@
 package com.example.AdService.config;
 
+import com.example.AdService.dto.onclickapi.OnClickCRM;
 import com.example.AdService.dto.onclickapi.OnClickRequest;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -22,7 +23,7 @@ public class KafkaConfig {
 
     //Bean for the producer of the kafka template for the Onclick service queue
     @Bean
-    public ProducerFactory<String,OnClickRequest> producerFactory(){
+    public ProducerFactory<String,OnClickCRM> producerFactory(){
         Map<String,Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,"localhost:9092");
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,StringSerializer.class);
@@ -31,8 +32,8 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaTemplate<String,OnClickRequest> kafkaTemplate(){
-        return new KafkaTemplate<String,OnClickRequest>(producerFactory());
+    public KafkaTemplate<String,OnClickCRM> kafkaTemplate(){
+        return new KafkaTemplate<String,OnClickCRM>(producerFactory());
     }
 
 //    @Bean

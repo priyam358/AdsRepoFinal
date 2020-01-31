@@ -4,9 +4,11 @@ import com.example.AdService.document.Ad;
 import com.example.AdService.document.Category;
 import com.example.AdService.dto.AdDTO;
 import com.example.AdService.dto.CategoryDTO;
+import com.example.AdService.dto.onclickapi.OnClickCRM;
 import com.example.AdService.dto.onclickapi.OnClickRequest;
 
 import com.example.AdService.document.UserCache;
+import com.example.AdService.feignclient.AnalyticsClient;
 import com.example.AdService.repository.AdRepository;
 import com.example.AdService.repository.CategoryRepository;
 import com.example.AdService.services.AdService;
@@ -20,13 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.core.TimeToLive;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AdServiceImpl implements AdService {
@@ -39,16 +36,19 @@ public class AdServiceImpl implements AdService {
     CategoryRepository categoryRepository;
 
     @Autowired
-    KafkaTemplate<String,OnClickRequest> kafkaTemplate;
+    KafkaTemplate<String,OnClickCRM> kafkaTemplate;
+
+    @Autowired
+    AnalyticsClient analyticsClient;
 
 
 
 
 
     @Override
-    public void onClick(OnClickRequest onClickRequest) {
+    public void onClick(OnClickCRM onClickCRM) {
 
-        sendOnclick(onClickRequest);
+        sendOnclick(onClickCRM);
 
 
     }
@@ -87,9 +87,8 @@ public class AdServiceImpl implements AdService {
     }
 
 
-    public void sendOnclick(OnClickRequest onClickRequest){
-
-        kafkaTemplate.send("clicks",onClickRequest);
+    public void sendOnclick(OnClickCRM onClickCRM){
+        kafkaTemplate.send("clicks",onClickCRM);
 
     }
 
@@ -113,8 +112,8 @@ public class AdServiceImpl implements AdService {
         //Todo : use a feign client to call the finction to get user specific tags
         List<Ad> finalAds = new ArrayList<>();
         List<String> tags = new ArrayList<>();
-        tags.add("Clothing");
-        tags.add("Cricket");
+
+        tags.addAll(analyticsClient.getTagsByUserId(userId));
 
 
         for(int i=0;i<tags.size();i++){
