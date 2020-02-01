@@ -11,7 +11,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 
 @EnableCaching

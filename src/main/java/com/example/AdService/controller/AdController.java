@@ -28,9 +28,9 @@ import javax.validation.Valid;
 import java.util.List;
 
 
-@CrossOrigin(origins =  "*", allowedHeaders = "*")
 @RequestMapping("/ads")
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AdController {
 
     @Autowired
@@ -44,7 +44,9 @@ public class AdController {
     @Autowired
     LoginClient loginClient;
 
-    @GetMapping("/onclick/{srcId}")
+    //if not running then change to string
+
+    @PostMapping("/onclick/{srcId}")
     public RedirectView onClick(@RequestHeader("Authorization") String accessToken,@PathVariable("srcId") Long srcId,@Valid @RequestBody OnClickRequest onClickRequest)
     {
 
